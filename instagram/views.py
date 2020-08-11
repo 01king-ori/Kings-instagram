@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm, UpdateUserForm, UpdateUserProfileForm, PostForm, CommentForm
+from .forms import SignUpForm, UpdateUserForm, UpdateUserProfileForm, PostForm, CommentForm,CreateProfileForm,UploadImageForm
 from django.contrib.auth import login, authenticate
 from .models import Post, Comment, Profile, Follow
 from django.contrib.auth.models import User
@@ -47,9 +47,24 @@ def index(request):
 
     }
     return render(request, 'instagram/index.html', params)
+@login_required(login_url='/accounts/login/')
+def create_profile(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = CreateProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = current_user
+            profile.save()
+        # return redirect(home)
+        return HttpResponseRedirect('/')
+
+    else:
+        form = CreateProfileForm()
+    return render(request, 'instagram/create-profile.html', {"form": form})
 
 
-@login_required(login_url='login')
+@login_required(login_url='/accounts/login')
 def profile(request, username):
     images = request.user.profile.posts.all()
     if request.method == 'POST':
@@ -93,6 +108,25 @@ def user_profile(request, username):
     }
     print(followers)
     return render(request, 'instagram/user_profile.html', params)
+
+@login_required(login_url='/accounts/login/')
+def upload_image(request):
+    title = "Instagram | Upload image"
+    current_user = request.user
+    try:
+        profile = Profile.objects.get(user = current_user)
+    except Profile.DoesNotExist:
+        raise Http404()
+    if request.method == "POST":
+        form = UploadImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save(commit=False)
+            image.profile = profile
+            image.save()
+        return redirect('home')
+    else:
+        form = UploadImageForm()
+    return render(request, 'instagram/upload_image.html', {"form": form, "title": title})
 
 
 @login_required(login_url='login')
