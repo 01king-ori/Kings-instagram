@@ -14,5 +14,7 @@ urlpatterns = [
     path('like', views.like_post, name='like_post'),
     path('search/', views.search_profile, name='search'),
     path('unfollow/<to_unfollow>', views.unfollow, name='unfollow'),
-    path('follow/<to_follow>', views.follow, name='follow')
+    path('follow/<to_follow>', views.follow, name='follow'),
+    path(r'^create_profile/$',views.create_profile,name = 'create_profile'),
+    path('media/images', views.upload_image, name = "upload_image"),
 ]
