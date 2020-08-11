@@ -14,14 +14,6 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username} Profile'
 
-    @receiver(post_save, sender=User)
-    def create_user_profile(self,sender, instance, created, **kwargs):
-        if created:
-            Profile.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(self,sender, instance, **kwargs):
-        instance.profile.save()
 
     def save_profile(self):
         self.user
@@ -51,7 +43,7 @@ class Post(models.Model):
     @property
     def get_all_comments(self):
         return self.comments.all()
-
+class Image(models.Model):
     def save_image(self):
         self.save()
 
