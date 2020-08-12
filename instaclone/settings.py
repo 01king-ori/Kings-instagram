@@ -74,8 +74,8 @@ DATABASES = {
            'NAME': 'instagram',
            'USER': 'vincent',
            'PASSWORD': '1234',
-           'HOST': '127.0.0.1',
-           
+           'HOST': '127.0.0.1','http://herokuapp.com'
+           'Port':'5432'
        }
        
    }
